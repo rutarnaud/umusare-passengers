@@ -1,0 +1,215 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Poppins, sans-serif;
+}
+
+
+body{
+    background:#ffffff;
+    color:#333;
+}
+
+
+/* NAVBAR */
+
+.navbar{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:20px 8%;
+
+    background:#0B1F3A;
+
+}
+
+
+.logo{
+
+    color:#D4AF37;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+}
+
+
+
+.nav-links{
+
+    display:flex;
+
+    list-style:none;
+
+    gap:25px;
+
+}
+
+
+.nav-links a{
+
+    color:white;
+
+    text-decoration:none;
+
+}
+
+
+
+.book-btn{
+
+    background:#D4AF37;
+
+    border:none;
+
+    padding:12px 25px;
+
+    cursor:pointer;
+
+}
+
+
+
+/* HERO */
+
+
+.hero{
+
+height:80vh;
+
+background:
+linear-gradient(
+rgba(11,31,58,0.7),
+rgba(11,31,58,0.7)
+),
+url("../images/car.jpg");
+
+background-size:cover;
+
+background-position:center;
+
+display:flex;
+
+align-items:center;
+
+padding-left:8%;
+
+}
+
+
+
+.hero-content{
+
+color:white;
+
+max-width:600px;
+
+}
+
+
+
+.hero h1{
+
+font-size:50px;
+
+}
+
+
+
+.hero p{
+
+font-size:20px;
+
+margin:20px 0;
+
+}
+
+
+
+.primary-btn,
+.secondary-btn{
+
+padding:15px 30px;
+
+border:none;
+
+margin-right:10px;
+
+cursor:pointer;
+
+}
+
+
+
+.primary-btn{
+
+background:#D4AF37;
+
+}
+
+
+
+.secondary-btn{
+
+background:white;
+
+}
+
+
+
+/* BOOKING */
+
+
+.booking{
+
+padding:50px 8%;
+
+text-align:center;
+
+}
+
+
+
+.booking input,
+.booking select{
+
+padding:15px;
+
+margin:10px;
+
+}
+
+
+
+.booking button{
+
+padding:15px 25px;
+
+background:#0B1F3A;
+
+color:white;
+
+border:none;
+
+}
+
+
+
+/* FOOTER */
+
+
+footer{
+
+background:#0B1F3A;
+
+color:white;
+
+text-align:center;
+
+padding:30px;
+
+}
