@@ -128,7 +128,82 @@ Search Availability
 
 </section>
 
+<!-- Featured Vehicles -->
 
+<section class="featured">
+
+    <h2>Our Featured Vehicles</h2>
+    <p>Choose from our reliable fleet for business, family trips, or airport transfers.</p>
+
+    <div class="vehicle-container">
+
+        <!-- Vehicle 1 -->
+        <div class="vehicle-card">
+            <img src="assets/images/altis.jpg" alt="Toyota Corolla Altis">
+
+            <div class="vehicle-info">
+                <h3>Toyota Corolla Altis</h3>
+
+                <p><strong>Year:</strong> 2018</p>
+                <p><strong>Seats:</strong> 5</p>
+                <p><strong>Price:</strong> 50,000 FRW / Day</p>
+
+                <a href="#" class="details-btn">View Details</a>
+                <a href="#" class="book-now-btn">Book Now</a>
+            </div>
+        </div>
+
+        <!-- Vehicle 2 -->
+        <div class="vehicle-card">
+            <img src="assets/images/tucson.jpg" alt="Hyundai Tucson">
+
+            <div class="vehicle-info">
+                <h3>Hyundai Tucson</h3>
+
+                <p><strong>Year:</strong> 2018</p>
+                <p><strong>Seats:</strong> 5</p>
+                <p><strong>Price:</strong> 70,000 FRW / Day</p>
+
+                <a href="#" class="details-btn">View Details</a>
+                <a href="#" class="book-now-btn">Book Now</a>
+            </div>
+        </div>
+
+        <!-- Vehicle 3 -->
+        <div class="vehicle-card">
+            <img src="assets/images/sorento.jpg" alt="Kia Sorento">
+
+            <div class="vehicle-info">
+                <h3>Kia Sorento</h3>
+
+                <p><strong>Year:</strong> 2019</p>
+                <p><strong>Seats:</strong> 7</p>
+                <p><strong>Price:</strong> 75,000 FRW / Day</p>
+
+                <a href="#" class="details-btn">View Details</a>
+                <a href="#" class="book-now-btn">Book Now</a>
+            </div>
+        </div>
+
+        <!-- Vehicle 4 -->
+        <div class="vehicle-card">
+            <img src="assets/images/h1.jpg" alt="Hyundai H-1 Van">
+
+            <div class="vehicle-info">
+                <h3>Hyundai H-1 Van</h3>
+
+                <p><strong>Year:</strong> 2019</p>
+                <p><strong>Seats:</strong> 12</p>
+                <p><strong>Price:</strong> 140,000 FRW / Day (With Driver)</p>
+
+                <a href="#" class="details-btn">View Details</a>
+                <a href="#" class="book-now-btn">Book Now</a>
+            </div>
+        </div>
+
+    </div>
+
+</section>
 
 <!-- Footer -->
 
