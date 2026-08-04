@@ -366,3 +366,143 @@ padding:30px;
     font-size:18px;
     color:#ffffff;
 }
+/* ===========================
+   CALL TO ACTION
+=========================== */
+
+.cta{
+
+    background:#D4AF37;
+    padding:80px 8%;
+    text-align:center;
+
+}
+
+.cta h2{
+
+    color:#0B1F3A;
+    font-size:40px;
+    margin-bottom:20px;
+
+}
+
+.cta p{
+
+    max-width:700px;
+    margin:auto;
+    color:#222;
+    line-height:1.8;
+    margin-bottom:35px;
+
+}
+
+.cta-buttons{
+
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+
+}
+
+.cta-book,
+.cta-whatsapp{
+
+    text-decoration:none;
+    padding:15px 35px;
+    border-radius:8px;
+    font-weight:bold;
+    transition:.3s;
+
+}
+
+.cta-book{
+
+    background:#0B1F3A;
+    color:white;
+
+}
+
+.cta-book:hover{
+
+    background:#08162b;
+
+}
+
+.cta-whatsapp{
+
+    background:#25D366;
+    color:white;
+
+}
+
+.cta-whatsapp:hover{
+
+    opacity:.9;
+
+}
+/* ===========================
+   TESTIMONIALS
+=========================== */
+
+.testimonials{
+
+    padding:80px 8%;
+    background:#f8f9fa;
+
+}
+
+.testimonials h2{
+
+    text-align:center;
+    color:#0B1F3A;
+    font-size:36px;
+    margin-bottom:50px;
+
+}
+
+.testimonial-container{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:30px;
+
+}
+
+.testimonial-card{
+
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    transition:.3s;
+
+}
+
+.testimonial-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+.testimonial-card p{
+
+    color:#555;
+    line-height:1.8;
+    margin-bottom:20px;
+    font-style:italic;
+
+}
+
+.testimonial-card h4{
+
+    color:#D4AF37;
+    margin-bottom:10px;
+
+}
+
+.testimonial-card h3{
+
+    color:#0B1F3A;
+
+}

@@ -139,7 +139,7 @@ Search Availability
 
         <!-- Vehicle 1 -->
         <div class="vehicle-card">
-            <img src="assets/images/altis.jpg" alt="Toyota Corolla Altis">
+            <img src="assets/images/altis.avif" alt="Toyota Corolla Altis">
 
             <div class="vehicle-info">
                 <h3>Toyota Corolla Altis</h3>
@@ -155,7 +155,7 @@ Search Availability
 
         <!-- Vehicle 2 -->
         <div class="vehicle-card">
-            <img src="assets/images/tucson.jpg" alt="Hyundai Tucson">
+            <img src="assets/images/Hyundai tucson.webp" alt="Hyundai Tucson">
 
             <div class="vehicle-info">
                 <h3>Hyundai Tucson</h3>
@@ -171,7 +171,7 @@ Search Availability
 
         <!-- Vehicle 3 -->
         <div class="vehicle-card">
-            <img src="assets/images/sorento.jpg" alt="Kia Sorento">
+            <img src="assets/images/sorento.jfif" alt="Kia Sorento">
 
             <div class="vehicle-info">
                 <h3>Kia Sorento</h3>
@@ -187,7 +187,7 @@ Search Availability
 
         <!-- Vehicle 4 -->
         <div class="vehicle-card">
-            <img src="assets/images/h1.jpg" alt="Hyundai H-1 Van">
+            <img src="assets/images/h1.webp" alt="Hyundai H-1 Van">
 
             <div class="vehicle-info">
                 <h3>Hyundai H-1 Van</h3>
@@ -263,6 +263,88 @@ Search Availability
         <div class="stat-box">
             <h2>24/7</h2>
             <p>Customer Support</p>
+        </div>
+
+    </div>
+
+</section>
+<!-- Call To Action -->
+
+<section class="cta">
+
+    <div class="cta-content">
+
+        <h2>Ready to Explore Rwanda?</h2>
+
+        <p>
+            Rent a reliable vehicle today and enjoy a safe, comfortable,
+            and affordable journey with Umusare Passengers.
+        </p>
+
+        <div class="cta-buttons">
+
+            <a href="#booking" class="cta-book">
+                Book Now
+            </a>
+
+            <a href="https://wa.me/250788957060"
+               class="cta-whatsapp"
+               target="_blank">
+
+                WhatsApp Us
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+<!-- Testimonials -->
+
+<section class="testimonials">
+
+    <h2>What Our Customers Say</h2>
+
+    <div class="testimonial-container">
+
+        <div class="testimonial-card">
+
+            <p>
+                "Excellent service! The vehicle was clean,
+                comfortable, and exactly what we needed."
+            </p>
+
+            <h4>⭐⭐⭐⭐⭐</h4>
+
+            <h3>John D.</h3>
+
+        </div>
+
+        <div class="testimonial-card">
+
+            <p>
+                "Professional drivers and affordable prices.
+                I highly recommend Umusare Passengers."
+            </p>
+
+            <h4>⭐⭐⭐⭐⭐</h4>
+
+            <h3>Alice M.</h3>
+
+        </div>
+
+        <div class="testimonial-card">
+
+            <p>
+                "Booking was easy, and customer support
+                responded quickly."
+            </p>
+
+            <h4>⭐⭐⭐⭐⭐</h4>
+
+            <h3>Patrick K.</h3>
+
         </div>
 
     </div>
