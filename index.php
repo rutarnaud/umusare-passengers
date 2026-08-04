@@ -239,6 +239,35 @@ Search Availability
     </div>
 
 </section>
+<!-- Statistics -->
+
+<section class="stats">
+
+    <div class="stats-container">
+
+        <div class="stat-box">
+            <h2>4+</h2>
+            <p>Vehicles Available</p>
+        </div>
+
+        <div class="stat-box">
+            <h2>100+</h2>
+            <p>Happy Customers</p>
+        </div>
+
+        <div class="stat-box">
+            <h2>5+</h2>
+            <p>Years Experience</p>
+        </div>
+
+        <div class="stat-box">
+            <h2>24/7</h2>
+            <p>Customer Support</p>
+        </div>
+
+    </div>
+
+</section>
 
 <!-- Footer -->
 

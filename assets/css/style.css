@@ -339,3 +339,30 @@ padding:30px;
     color:#666;
     line-height:1.6;
 }
+/* ===========================
+   STATISTICS SECTION
+=========================== */
+
+.stats{
+    background:#0B1F3A;
+    color:white;
+    padding:70px 8%;
+}
+
+.stats-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:30px;
+    text-align:center;
+}
+
+.stat-box h2{
+    font-size:48px;
+    color:#D4AF37;
+    margin-bottom:10px;
+}
+
+.stat-box p{
+    font-size:18px;
+    color:#ffffff;
+}
