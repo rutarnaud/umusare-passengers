@@ -204,6 +204,41 @@ Search Availability
     </div>
 
 </section>
+<!-- Why Choose Us -->
+
+<section class="why-us">
+
+    <h2>Why Choose Umusare Passengers?</h2>
+
+    <div class="why-container">
+
+        <div class="why-card">
+            <div class="icon">🚗</div>
+            <h3>Reliable Vehicles</h3>
+            <p>All our vehicles are well maintained, clean, and ready for every journey.</p>
+        </div>
+
+        <div class="why-card">
+            <div class="icon">💰</div>
+            <h3>Affordable Prices</h3>
+            <p>Transparent pricing with no hidden charges.</p>
+        </div>
+
+        <div class="why-card">
+            <div class="icon">🕒</div>
+            <h3>24/7 Support</h3>
+            <p>Our team is available anytime to assist you.</p>
+        </div>
+
+        <div class="why-card">
+            <div class="icon">👨‍✈️</div>
+            <h3>Professional Drivers</h3>
+            <p>Experienced drivers who value your comfort and safety.</p>
+        </div>
+
+    </div>
+
+</section>
 
 <!-- Footer -->
 

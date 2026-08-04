@@ -292,3 +292,50 @@ padding:30px;
     color:#000;
     margin-left:8px;
 }
+/* WHY CHOOSE US */
+
+.why-us{
+    padding:80px 8%;
+    background:#ffffff;
+}
+
+.why-us h2{
+    text-align:center;
+    color:#0B1F3A;
+    margin-bottom:50px;
+    font-size:36px;
+}
+
+.why-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:30px;
+}
+
+.why-card{
+    background:#f8f9fa;
+    padding:30px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.why-card:hover{
+    transform:translateY(-8px);
+}
+
+.icon{
+    font-size:50px;
+    margin-bottom:20px;
+}
+
+.why-card h3{
+    color:#0B1F3A;
+    margin-bottom:15px;
+}
+
+.why-card p{
+    color:#666;
+    line-height:1.6;
+}
