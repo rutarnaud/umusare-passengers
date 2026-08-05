@@ -110,6 +110,14 @@ $result = $conn->query("SELECT * FROM vehicles ORDER BY id DESC");
 Edit
 </a>
 
+<a 
+href="delete_vehicle.php?id=<?php echo $row['id']; ?>"
+onclick="return confirm('Are you sure you want to delete this vehicle?');">
+
+Delete
+
+</a>
+
 </td>
 
 </tr>
