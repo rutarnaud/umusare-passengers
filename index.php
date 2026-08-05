@@ -149,9 +149,10 @@ Search Availability
                 <p><strong>Price:</strong> 50,000 FRW / Day</p>
 
                 <a href="#" class="details-btn">View Details</a>
-                <a href="booking.php" class="book-now-btn">
-    Book Now
+                <a href="booking.php?vehicle=Toyota%20Corolla%20Altis" class="book-now-btn">
+Book Now
 </a>
+ 
             </div>
         </div>
 
@@ -167,9 +168,10 @@ Search Availability
                 <p><strong>Price:</strong> 70,000 FRW / Day</p>
 
                 <a href="#" class="details-btn">View Details</a>
-                <a href="booking.php" class="book-now-btn">
-    Book Now
+                <a href="booking.php?vehicle=Hyundai%20Tucson" class="book-now-btn">
+Book Now
 </a>
+ 
             </div>
         </div>
 
@@ -185,9 +187,10 @@ Search Availability
                 <p><strong>Price:</strong> 75,000 FRW / Day</p>
 
                 <a href="#" class="details-btn">View Details</a>
-                <a href="booking.php" class="book-now-btn">
-    Book Now
+                <a href="booking.php?vehicle=Kia%20Sorento" class="book-now-btn">
+Book Now
 </a>
+    
             </div>
         </div>
 
@@ -203,8 +206,8 @@ Search Availability
                 <p><strong>Price:</strong> 140,000 FRW / Day (With Driver)</p>
 
                 <a href="#" class="details-btn">View Details</a>
-                <a href="booking.php" class="book-now-btn">
-    Book Now
+                <a href="booking.php?vehicle=Hyundai%20H-1%20Van" class="book-now-btn">
+Book Now
 </a>
             </div>
         </div>

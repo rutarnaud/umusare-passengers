@@ -31,16 +31,45 @@
 
         <label>Select Vehicle</label>
 
-        <select name="vehicle" required>
+        <?php
 
-            <option value="">Choose Vehicle</option>
+$selectedVehicle = "";
 
-            <option>Toyota Corolla Altis</option>
-            <option>Hyundai Tucson</option>
-            <option>Kia Sorento</option>
-            <option>Hyundai H-1 Van</option>
+if(isset($_GET['vehicle'])){
 
-        </select>
+    $selectedVehicle = $_GET['vehicle'];
+
+}
+
+?>
+
+<label>Select Vehicle</label>
+
+<select name="vehicle" required>
+
+<option value="">Choose Vehicle</option>
+
+<option 
+<?php if($selectedVehicle=="Toyota Corolla Altis") echo "selected"; ?>>
+Toyota Corolla Altis
+</option>
+
+<option 
+<?php if($selectedVehicle=="Hyundai Tucson") echo "selected"; ?>>
+Hyundai Tucson
+</option>
+
+<option 
+<?php if($selectedVehicle=="Kia Sorento") echo "selected"; ?>>
+Kia Sorento
+</option>
+
+<option 
+<?php if($selectedVehicle=="Hyundai H-1 Van") echo "selected"; ?>>
+Hyundai H-1 Van
+</option>
+
+</select>
 
 
         <label>Pick-up Date</label>
