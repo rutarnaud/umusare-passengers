@@ -1,5 +1,22 @@
 <?php
 
+session_start();
+
+
+if(!isset($_SESSION['admin'])){
+
+    header("Location: login.php");
+
+    exit();
+
+}
+
+
+include "../config.php";
+
+?>
+<?php
+
 include "../config.php";
 
 
@@ -124,6 +141,19 @@ font-weight:bold;
 
 
 <h1>Umusare Passengers - Bookings</h1>
+
+<a href="logout.php">
+
+<button>
+Logout
+</button>
+
+</a>
+
+<a href="vehicles.php">
+    <button>Manage Vehicles</button>
+</a>
+
 <div class="stats">
 
 <div class="card">
