@@ -3,7 +3,7 @@
 include "../config.php";
 
 
-$sql = "SELECT * FROM bookings ORDER BY created_at DESC";
+$sql = "SELECT * FROM bookings ORDER BY id DESC";
 
 $result = $conn->query($sql);
 
@@ -84,6 +84,8 @@ th, td{
 <th>Pickup</th>
 <th>Return</th>
 <th>Service</th>
+<th>Status</th>
+<th>Action</th>
 
 </tr>
 
@@ -112,7 +114,46 @@ while($row = $result->fetch_assoc()){
 <td><?php echo $row['return_date']; ?></td>
 
 <td><?php echo $row['service']; ?></td>
+<td>
+<?php echo htmlspecialchars($row['status']); ?>
+</td>
 
+<form action="update_status.php" method="POST">
+
+<input type="hidden" 
+name="id" 
+value="<?php echo $row['id']; ?>">
+
+
+<select name="status">
+
+<option>
+Pending
+</option>
+
+<option>
+Confirmed
+</option>
+
+<option>
+Cancelled
+</option>
+
+</select>
+
+
+</td>
+
+
+<td>
+
+<button type="submit">
+Update
+</button>
+
+</form>
+
+</td>
 
 </tr>
 
