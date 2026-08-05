@@ -9,27 +9,45 @@ if(!isset($_SESSION['admin'])){
 
 include "../config.php";
 
+
 if(isset($_POST['save'])){
 
-$name = $_POST['name'];
-$price = $_POST['price'];
-$image = $_POST['image'];
-$description = $_POST['description'];
+    $name = $_POST['name'];
+    $price = $_POST['price'];
+    $description = $_POST['description'];
 
-$sql = "INSERT INTO vehicles(name,price,image,description)
-VALUES('$name','$price','$image','$description')";
 
-if($conn->query($sql)){
-    header("Location: vehicles.php");
-    exit();
-}else{
-    echo "Error: ".$conn->error;
-}
+    // Upload image
+
+    $image = $_FILES['image']['name'];
+    $tmp_name = $_FILES['image']['tmp_name'];
+
+
+    $upload_path = "../assets/images/" . $image;
+
+
+    move_uploaded_file($tmp_name, $upload_path);
+
+
+
+    $sql = "INSERT INTO vehicles(name,price,image,description)
+    VALUES('$name','$price','$image','$description')";
+
+
+    if($conn->query($sql)){
+
+        header("Location: vehicles.php");
+        exit();
+
+    }else{
+
+        echo "Error: ".$conn->error;
+
+    }
 
 }
 
 ?>
-
 <!DOCTYPE html>
 <html>
 
@@ -73,7 +91,7 @@ cursor:pointer;
 
 <body>
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
 
 <h2>Add New Vehicle</h2>
 
@@ -89,10 +107,12 @@ name="price"
 placeholder="Price"
 required>
 
+<label>Vehicle Image</label>
+
 <input
-type="text"
+type="file"
 name="image"
-placeholder="Image filename (example: altis.avif)"
+accept=".jpg,.jpeg,.png,.webp,.avif"
 required>
 
 <textarea

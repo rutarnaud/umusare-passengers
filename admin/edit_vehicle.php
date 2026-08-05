@@ -27,7 +27,24 @@ if(isset($_POST['update'])){
 
 $name = $_POST['name'];
 $price = $_POST['price'];
-$image = $_POST['image'];
+$image = $vehicle['image'];
+
+
+if(isset($_FILES['image']) && $_FILES['image']['name'] != ""){
+
+
+    $image = $_FILES['image']['name'];
+
+    $tmp_name = $_FILES['image']['tmp_name'];
+
+
+    move_uploaded_file(
+        $tmp_name,
+        "../assets/images/".$image
+    );
+
+
+}
 $description = $_POST['description'];
 $status = $_POST['status'];
 
@@ -113,7 +130,7 @@ border:none;
 <body>
 
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
 
 
 <h2>Edit Vehicle</h2>
@@ -133,8 +150,18 @@ value="<?php echo $vehicle['price']; ?>">
 
 
 
-<input 
-type="text"
+<label>Change Vehicle Image</label>
+
+<input
+type="file"
+name="image"
+accept=".jpg,.jpeg,.png,.webp,.avif">
+
+
+<p>
+Current Image:
+<?php echo $vehicle['image']; ?>
+</p>type="text"
 name="image"
 value="<?php echo $vehicle['image']; ?>">
 
