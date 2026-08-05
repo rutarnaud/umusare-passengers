@@ -127,6 +127,9 @@ Search Availability
 </form>
 
 </section>
+<?php
+include "config.php";
+?>
 
 <!-- Featured Vehicles -->
 
@@ -137,117 +140,62 @@ Search Availability
 
     <div class="vehicle-container">
 
-        <!-- Vehicle 1 -->
-        <div class="vehicle-card">
-            <img src="assets/images/altis.avif" alt="Toyota Corolla Altis">
+<?php
 
-            <div class="vehicle-info">
-                <h3>Toyota Corolla Altis</h3>
+$result = $conn->query("SELECT * FROM vehicles WHERE status='Available'");
 
-                <p><strong>Year:</strong> 2018</p>
-                <p><strong>Seats:</strong> 5</p>
-                <p><strong>Price:</strong> 50,000 FRW / Day</p>
 
-                <a href="#" class="details-btn">View Details</a>
-                <a href="booking.php?vehicle=Toyota%20Corolla%20Altis" class="book-now-btn">
+while($row = $result->fetch_assoc()){
+
+?>
+
+<div class="vehicle-card">
+
+<img src="assets/images/<?php echo $row['image']; ?>" 
+alt="<?php echo $row['name']; ?>">
+
+
+<div class="vehicle-info">
+
+<h3>
+<?php echo htmlspecialchars($row['name']); ?>
+</h3>
+
+
+<p>
+<strong>Price:</strong>
+<?php echo htmlspecialchars($row['price']); ?>
+</p>
+
+
+<p>
+<?php echo htmlspecialchars($row['description']); ?>
+</p>
+
+
+<a href="#" class="details-btn">
+View Details
+</a>
+
+
+<a href="booking.php?vehicle=<?php echo urlencode($row['name']); ?>" 
+class="book-now-btn">
 Book Now
 </a>
- 
-            </div>
-        </div>
 
-        <!-- Vehicle 2 -->
-        <div class="vehicle-card">
-            <img src="assets/images/Hyundai tucson.webp" alt="Hyundai Tucson">
 
-            <div class="vehicle-info">
-                <h3>Hyundai Tucson</h3>
+</div>
 
-                <p><strong>Year:</strong> 2018</p>
-                <p><strong>Seats:</strong> 5</p>
-                <p><strong>Price:</strong> 70,000 FRW / Day</p>
+</div>
 
-                <a href="#" class="details-btn">View Details</a>
-                <a href="booking.php?vehicle=Hyundai%20Tucson" class="book-now-btn">
-Book Now
-</a>
- 
-            </div>
-        </div>
 
-        <!-- Vehicle 3 -->
-        <div class="vehicle-card">
-            <img src="assets/images/sorento.jfif" alt="Kia Sorento">
+<?php
 
-            <div class="vehicle-info">
-                <h3>Kia Sorento</h3>
+}
 
-                <p><strong>Year:</strong> 2019</p>
-                <p><strong>Seats:</strong> 7</p>
-                <p><strong>Price:</strong> 75,000 FRW / Day</p>
+?>
 
-                <a href="#" class="details-btn">View Details</a>
-                <a href="booking.php?vehicle=Kia%20Sorento" class="book-now-btn">
-Book Now
-</a>
-    
-            </div>
-        </div>
-
-        <!-- Vehicle 4 -->
-        <div class="vehicle-card">
-            <img src="assets/images/h1.webp" alt="Hyundai H-1 Van">
-
-            <div class="vehicle-info">
-                <h3>Hyundai H-1 Van</h3>
-
-                <p><strong>Year:</strong> 2019</p>
-                <p><strong>Seats:</strong> 12</p>
-                <p><strong>Price:</strong> 140,000 FRW / Day (With Driver)</p>
-
-                <a href="#" class="details-btn">View Details</a>
-                <a href="booking.php?vehicle=Hyundai%20H-1%20Van" class="book-now-btn">
-Book Now
-</a>
-            </div>
-        </div>
-
-    </div>
-
-</section>
-<!-- Why Choose Us -->
-
-<section class="why-us">
-
-    <h2>Why Choose Umusare Passengers?</h2>
-
-    <div class="why-container">
-
-        <div class="why-card">
-            <div class="icon">🚗</div>
-            <h3>Reliable Vehicles</h3>
-            <p>All our vehicles are well maintained, clean, and ready for every journey.</p>
-        </div>
-
-        <div class="why-card">
-            <div class="icon">💰</div>
-            <h3>Affordable Prices</h3>
-            <p>Transparent pricing with no hidden charges.</p>
-        </div>
-
-        <div class="why-card">
-            <div class="icon">🕒</div>
-            <h3>24/7 Support</h3>
-            <p>Our team is available anytime to assist you.</p>
-        </div>
-
-        <div class="why-card">
-            <div class="icon">👨‍✈️</div>
-            <h3>Professional Drivers</h3>
-            <p>Experienced drivers who value your comfort and safety.</p>
-        </div>
-
-    </div>
+</div>
 
 </section>
 <!-- Statistics -->
