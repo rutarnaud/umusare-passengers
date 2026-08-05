@@ -3,10 +3,29 @@
 include "../config.php";
 
 
+$totalBookings = $conn->query(
+    "SELECT COUNT(*) AS total FROM bookings"
+)->fetch_assoc()['total'];
+
+
+$pendingBookings = $conn->query(
+    "SELECT COUNT(*) AS total FROM bookings WHERE status='Pending'"
+)->fetch_assoc()['total'];
+
+
+$confirmedBookings = $conn->query(
+    "SELECT COUNT(*) AS total FROM bookings WHERE status='Confirmed'"
+)->fetch_assoc()['total'];
+
+
+$cancelledBookings = $conn->query(
+    "SELECT COUNT(*) AS total FROM bookings WHERE status='Cancelled'"
+)->fetch_assoc()['total'];
+
+
 $sql = "SELECT * FROM bookings ORDER BY id DESC";
 
 $result = $conn->query($sql);
-
 
 ?>
 
@@ -60,6 +79,41 @@ th, td{
     text-align:center;
 
 }
+.stats{
+
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+margin:30px 0;
+
+}
+
+
+.card{
+
+background:white;
+padding:25px;
+text-align:center;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+
+}
+
+
+.card h2{
+
+font-size:35px;
+color:#D4AF37;
+
+}
+
+
+.card p{
+
+color:#0B1F3A;
+font-weight:bold;
+
+}
 
 </style>
 
@@ -70,6 +124,32 @@ th, td{
 
 
 <h1>Umusare Passengers - Bookings</h1>
+<div class="stats">
+
+<div class="card">
+<h2><?php echo $totalBookings; ?></h2>
+<p>Total Bookings</p>
+</div>
+
+
+<div class="card">
+<h2><?php echo $pendingBookings; ?></h2>
+<p>Pending</p>
+</div>
+
+
+<div class="card">
+<h2><?php echo $confirmedBookings; ?></h2>
+<p>Confirmed</p>
+</div>
+
+
+<div class="card">
+<h2><?php echo $cancelledBookings; ?></h2>
+<p>Cancelled</p>
+</div>
+
+</div>
 
 
 <table>
@@ -115,8 +195,14 @@ while($row = $result->fetch_assoc()){
 
 <td><?php echo $row['service']; ?></td>
 <td>
+
+<td>
 <?php echo htmlspecialchars($row['status']); ?>
 </td>
+
+<form action="update_status.php" method="POST">
+
+<td>
 
 <form action="update_status.php" method="POST">
 
@@ -127,20 +213,24 @@ value="<?php echo $row['id']; ?>">
 
 <select name="status">
 
-<option>
+<option value="Pending"
+<?php if($row['status']=="Pending") echo "selected"; ?>>
 Pending
 </option>
 
-<option>
+
+<option value="Confirmed"
+<?php if($row['status']=="Confirmed") echo "selected"; ?>>
 Confirmed
 </option>
 
-<option>
+
+<option value="Cancelled"
+<?php if($row['status']=="Cancelled") echo "selected"; ?>>
 Cancelled
 </option>
 
 </select>
-
 
 </td>
 
@@ -152,6 +242,8 @@ Update
 </button>
 
 </form>
+
+
 
 </td>
 
