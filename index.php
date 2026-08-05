@@ -149,7 +149,9 @@ Search Availability
                 <p><strong>Price:</strong> 50,000 FRW / Day</p>
 
                 <a href="#" class="details-btn">View Details</a>
-                <a href="#" class="book-now-btn">Book Now</a>
+                <a href="booking.php" class="book-now-btn">
+    Book Now
+</a>
             </div>
         </div>
 
@@ -165,7 +167,9 @@ Search Availability
                 <p><strong>Price:</strong> 70,000 FRW / Day</p>
 
                 <a href="#" class="details-btn">View Details</a>
-                <a href="#" class="book-now-btn">Book Now</a>
+                <a href="booking.php" class="book-now-btn">
+    Book Now
+</a>
             </div>
         </div>
 
@@ -181,7 +185,9 @@ Search Availability
                 <p><strong>Price:</strong> 75,000 FRW / Day</p>
 
                 <a href="#" class="details-btn">View Details</a>
-                <a href="#" class="book-now-btn">Book Now</a>
+                <a href="booking.php" class="book-now-btn">
+    Book Now
+</a>
             </div>
         </div>
 
@@ -197,7 +203,9 @@ Search Availability
                 <p><strong>Price:</strong> 140,000 FRW / Day (With Driver)</p>
 
                 <a href="#" class="details-btn">View Details</a>
-                <a href="#" class="book-now-btn">Book Now</a>
+                <a href="booking.php" class="book-now-btn">
+    Book Now
+</a>
             </div>
         </div>
 
@@ -283,9 +291,9 @@ Search Availability
 
         <div class="cta-buttons">
 
-            <a href="#booking" class="cta-book">
-                Book Now
-            </a>
+        <a href="booking.php" class="book-now-btn">
+    Book Now
+</a>
 
             <a href="https://wa.me/250788957060"
                class="cta-whatsapp"
