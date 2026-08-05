@@ -1,3 +1,18 @@
+<?php
+
+include "config.php";
+
+$selectedVehicle = "";
+
+if(isset($_GET['vehicle'])){
+
+    $selectedVehicle = $_GET['vehicle'];
+
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,7 +44,7 @@
         <input type="email" name="email">
 
 
-        <label>Select Vehicle</label>
+       
 
         <?php
 
@@ -47,30 +62,49 @@ if(isset($_GET['vehicle'])){
 
 <select name="vehicle" required>
 
-<option value="">Choose Vehicle</option>
-
-<option 
-<?php if($selectedVehicle=="Toyota Corolla Altis") echo "selected"; ?>>
-Toyota Corolla Altis
+<option value="">
+Choose Vehicle
 </option>
 
-<option 
-<?php if($selectedVehicle=="Hyundai Tucson") echo "selected"; ?>>
-Hyundai Tucson
+
+<?php
+
+$result = $conn->query(
+"SELECT * FROM vehicles WHERE status='Available'"
+);
+
+
+while($row = $result->fetch_assoc()){
+
+?>
+
+<option value="<?php echo $row['name']; ?>"
+
+<?php
+
+if($selectedVehicle == $row['name']){
+
+echo "selected";
+
+}
+
+?>
+
+>
+
+<?php echo $row['name']; ?>
+
 </option>
 
-<option 
-<?php if($selectedVehicle=="Kia Sorento") echo "selected"; ?>>
-Kia Sorento
-</option>
 
-<option 
-<?php if($selectedVehicle=="Hyundai H-1 Van") echo "selected"; ?>>
-Hyundai H-1 Van
-</option>
+<?php
+
+}
+
+?>
+
 
 </select>
-
 
         <label>Pick-up Date</label>
         <input type="date" name="pickup_date" required>
