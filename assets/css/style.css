@@ -506,3 +506,87 @@ padding:30px;
     color:#0B1F3A;
 
 }
+/* ===========================
+   PROFESSIONAL FOOTER
+=========================== */
+
+
+.footer{
+
+    background:#081b36;
+    color:white;
+    padding:60px 8% 20px;
+
+}
+
+
+.footer-container{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:40px;
+
+}
+
+
+.footer-box h3{
+
+    color:#D4AF37;
+    margin-bottom:20px;
+
+}
+
+
+.footer-box p{
+
+    color:#ddd;
+    line-height:1.7;
+
+}
+
+
+.footer-box ul{
+
+    list-style:none;
+    padding:0;
+
+}
+
+
+.footer-box ul li{
+
+    margin-bottom:12px;
+
+}
+
+
+.footer-box ul li a{
+
+    text-decoration:none;
+    color:#ddd;
+
+}
+
+
+.footer-box ul li a:hover{
+
+    color:#D4AF37;
+
+}
+
+
+.footer-bottom{
+
+    margin-top:40px;
+    padding-top:20px;
+    border-top:1px solid rgba(255,255,255,.2);
+    text-align:center;
+
+}
+
+
+.footer-bottom p{
+
+    color:#ccc;
+
+}

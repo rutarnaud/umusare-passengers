@@ -353,17 +353,93 @@ Search Availability
 
 <!-- Footer -->
 
-<footer>
+<!-- Professional Footer -->
 
-<p>
-© 2026 Umusare Passengers.
-All Rights Reserved.
-</p>
+<footer class="footer">
 
-<p>
-📍 KG St 106, Kimironko Kigali |
-📞 +250 788 957 060
-</p>
+    <div class="footer-container">
+
+        <!-- About -->
+        <div class="footer-box">
+
+            <h3>UMUSARE PASSENGERS</h3>
+
+            <p>
+                Reliable car rental services in Rwanda.
+                Self drive, chauffeur services and airport transfers.
+            </p>
+
+        </div>
+
+
+        <!-- Quick Links -->
+        <div class="footer-box">
+
+            <h3>Quick Links</h3>
+
+            <ul>
+
+                <li><a href="#">Home</a></li>
+                <li><a href="#fleet">Fleet</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- Contact -->
+        <div class="footer-box">
+
+            <h3>Contact Us</h3>
+
+            <p>
+                📍 Kigali, Rwanda
+            </p>
+
+            <p>
+                📞 +250 788 957 060
+            </p>
+
+            <p>
+                ✉ info@umusarepassengers.com
+            </p>
+
+        </div>
+
+
+        <!-- Social Media -->
+        <div class="footer-box">
+
+            <h3>Follow Us</h3>
+
+            <p>
+                Facebook
+            </p>
+
+            <p>
+                Instagram
+            </p>
+
+            <p>
+                WhatsApp
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 Umusare Passengers. All Rights Reserved.
+        </p>
+
+    </div>
+
 
 </footer>
 
