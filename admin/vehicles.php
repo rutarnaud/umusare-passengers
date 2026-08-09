@@ -48,9 +48,11 @@ $result = $conn->query("SELECT * FROM vehicles ORDER BY id DESC");
     }
 
     img{
-        width:120px;
-        border-radius:8px;
-    }
+    width:120px;
+    height:80px;
+    object-fit:cover;
+    border-radius:8px;
+}
 
     .btn{
         display:inline-block;
@@ -95,7 +97,9 @@ $result = $conn->query("SELECT * FROM vehicles ORDER BY id DESC");
 <td><?php echo $row['id']; ?></td>
 
 <td>
-<img src="../assets/images/<?php echo $row['image']; ?>">
+<img 
+src="../assets/images/<?php echo htmlspecialchars($row['image']); ?>"
+alt="<?php echo htmlspecialchars($row['name']); ?>">
 </td>
 
 <td><?php echo htmlspecialchars($row['name']); ?></td>
