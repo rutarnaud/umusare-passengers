@@ -221,7 +221,13 @@ h1{
 
 }
 
+.whatsapp{
 
+background:#25D366;
+
+color:white;
+
+}
 </style>
 
 </head>
@@ -376,6 +382,38 @@ href="index.php"
 class="btn home">
 
 ⬅ Back Home
+
+</a>
+
+<?php
+
+$whatsappNumber = "250780310358";
+
+$whatsappMessage =
+"Hello Umusare Passengers,\n\n" .
+"I have submitted a booking.\n\n" .
+"Booking ID: #" . $booking['id'] . "\n" .
+"Vehicle: " . $booking['vehicle'] . "\n" .
+"Pickup Date: " . $booking['pickup_date'] . "\n" .
+"Return Date: " . $booking['return_date'] . "\n" .
+"Service: " . $booking['service'] . "\n\n" .
+"Name: " . $booking['name'] . "\n" .
+"Phone: " . $booking['phone'];
+
+$whatsappLink =
+"https://wa.me/" .
+$whatsappNumber .
+"?text=" .
+urlencode($whatsappMessage);
+
+?>
+
+<a
+href="<?php echo htmlspecialchars($whatsappLink); ?>"
+class="btn whatsapp"
+target="_blank">
+
+📱 Contact Us on WhatsApp
 
 </a>
 
