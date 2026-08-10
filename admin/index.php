@@ -392,6 +392,19 @@ if($row['status'] == "Confirmed"){
 
 <td>
 
+<a
+href="view_booking.php?id=<?php echo $row['id']; ?>"
+style="
+display:inline-block;
+padding:7px 12px;
+background:#0B1F3A;
+color:white;
+text-decoration:none;
+border-radius:5px;
+margin-right:5px;
+">
+View Details
+</a>
 
 <form
 action="update_status.php"
