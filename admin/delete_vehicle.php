@@ -15,17 +15,19 @@ if(!isset($_SESSION['admin'])){
 include "../config.php";
 
 
-$id = $_GET['id'];
+$id = intval($_GET['id']);
 
 
 // First get vehicle image
 
-$result = $conn->query(
-    "SELECT image FROM vehicles WHERE id=$id"
-);
+$stmt = $conn->prepare("SELECT image FROM vehicles WHERE id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
 
-
+$result = $stmt->get_result();
 $vehicle = $result->fetch_assoc();
+
+$stmt->close();
 
 
 $image = $vehicle['image'];
@@ -48,10 +50,10 @@ if(!empty($image)){
 
 // Delete vehicle from database
 
-$sql = "DELETE FROM vehicles WHERE id=$id";
+$stmt = $conn->prepare("DELETE FROM vehicles WHERE id = ?");
+$stmt->bind_param("i", $id);
 
-
-if($conn->query($sql)){
+if($stmt->execute()){
 
 
     header("Location: vehicles.php");

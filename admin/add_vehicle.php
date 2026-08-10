@@ -17,33 +17,98 @@ if(isset($_POST['save'])){
     $description = $_POST['description'];
 
 
-    // Upload image
+    // Secure image upload
 
-    $image = $_FILES['image']['name'];
-    $tmp_name = $_FILES['image']['tmp_name'];
+$allowed_types = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 
+$max_size = 5 * 1024 * 1024; // 5 MB
 
-    $upload_path = "../assets/images/" . $image;
-
-
-    move_uploaded_file($tmp_name, $upload_path);
+$image = $_FILES['image'];
 
 
+// Check upload error
 
-    $sql = "INSERT INTO vehicles(name,price,image,description)
-    VALUES('$name','$price','$image','$description')";
+if($image['error'] !== UPLOAD_ERR_OK){
+
+    die("Image upload failed.");
+
+}
 
 
-    if($conn->query($sql)){
+// Check file size
 
-        header("Location: vehicles.php");
-        exit();
+if($image['size'] > $max_size){
 
-    }else{
+    die("Image is too large. Maximum size is 5 MB.");
 
-        echo "Error: ".$conn->error;
+}
 
-    }
+
+// Check real file type
+
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
+
+$file_type = finfo_file($finfo, $image['tmp_name']);
+
+finfo_close($finfo);
+
+
+if(!in_array($file_type, $allowed_types)){
+
+    die("Invalid image type. Please upload JPG, PNG, WEBP or AVIF.");
+
+}
+
+
+// Create a safe filename
+
+$extension = pathinfo($image['name'], PATHINFO_EXTENSION);
+
+$new_filename = uniqid('vehicle_', true) . '.' . strtolower($extension);
+
+
+$upload_path = "../assets/images/" . $new_filename;
+
+
+// Move image
+
+if(!move_uploaded_file($image['tmp_name'], $upload_path)){
+
+    die("Failed to save image.");
+
+}
+
+
+$image = $new_filename;
+
+
+
+$stmt = $conn->prepare(
+    "INSERT INTO vehicles (name, price, image, description)
+     VALUES (?, ?, ?, ?)"
+);
+
+$stmt->bind_param(
+    "ssss",
+    $name,
+    $price,
+    $image,
+    $description
+);
+
+
+if($stmt->execute()){
+
+    $stmt->close();
+
+    header("Location: vehicles.php");
+    exit();
+
+}else{
+
+    echo "Error: ".$stmt->error;
+
+}
 
 }
 
