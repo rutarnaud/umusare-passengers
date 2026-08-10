@@ -101,10 +101,13 @@ if($stmt->execute()){
 
     $stmt->close();
 
+    $_SESSION['success'] = "Vehicle added successfully!";
+
     header("Location: vehicles.php");
     exit();
 
-}else{
+}
+else{
 
     echo "Error: ".$stmt->error;
 

@@ -173,11 +173,14 @@ if(isset($_POST['update'])){
     if($stmt->execute()){
 
         $stmt->close();
-
+    
+        $_SESSION['success'] = "Vehicle updated successfully!";
+    
         header("Location: vehicles.php");
         exit();
-
-    }else{
+    
+    }
+    else{
 
         echo "Error updating vehicle: "
              . $stmt->error;

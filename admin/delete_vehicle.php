@@ -55,13 +55,13 @@ $stmt->bind_param("i", $id);
 
 if($stmt->execute()){
 
+    $_SESSION['success'] = "Vehicle deleted successfully!";
 
     header("Location: vehicles.php");
-
     exit();
 
-
-}else{
+}
+else{
 
 
     echo "Error deleting vehicle: ".$conn->error;

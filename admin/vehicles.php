@@ -8,6 +8,15 @@ if(!isset($_SESSION['admin'])){
 }
 
 include "../config.php";
+$success = "";
+
+if(isset($_SESSION['success'])){
+
+    $success = $_SESSION['success'];
+
+    unset($_SESSION['success']);
+
+}
 
 $result = $conn->query("SELECT * FROM vehicles ORDER BY id DESC");
 
@@ -64,6 +73,14 @@ $result = $conn->query("SELECT * FROM vehicles ORDER BY id DESC");
         margin-bottom:20px;
         font-weight:bold;
     }
+    .success-message{
+    background:#d4edda;
+    color:#155724;
+    padding:15px;
+    margin-bottom:20px;
+    border-radius:6px;
+    font-weight:bold;
+}
 
     </style>
 
@@ -72,6 +89,13 @@ $result = $conn->query("SELECT * FROM vehicles ORDER BY id DESC");
 <body>
 
 <h1>Vehicle Management</h1>
+<?php if($success != ""){ ?>
+
+<div class="success-message">
+    ✅ <?php echo htmlspecialchars($success); ?>
+</div>
+
+<?php } ?>
 <a class="btn" href="add_vehicle.php">
 ➕ Add New Vehicle
 </a>
