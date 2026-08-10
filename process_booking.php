@@ -1,117 +1,102 @@
 <?php
 
-// Database connection
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "umusare_db";
-
-
-// Create connection
-
-$conn = new mysqli(
-    $servername,
-    $username,
-    $password,
-    $database
-);
-
-
-// Check connection
-
-if ($conn->connect_error) {
-
-    die("Connection failed: " . $conn->connect_error);
-
-}
+include "config.php";
 
 
 // Get form data
 
-$name = $_POST['name'];
+$name = trim($_POST['name'] ?? '');
+$phone = trim($_POST['phone'] ?? '');
+$email = trim($_POST['email'] ?? '');
+$vehicle = trim($_POST['vehicle'] ?? '');
+$pickup_date = $_POST['pickup_date'] ?? '';
+$return_date = $_POST['return_date'] ?? '';
+$service = trim($_POST['service'] ?? '');
+$message = trim($_POST['message'] ?? '');
 
-$phone = $_POST['phone'];
 
-$email = $_POST['email'];
+// Basic validation
 
-$vehicle = $_POST['vehicle'];
+if(
+    empty($name) ||
+    empty($phone) ||
+    empty($vehicle) ||
+    empty($pickup_date) ||
+    empty($return_date) ||
+    empty($service)
+){
 
-$pickup_date = $_POST['pickup_date'];
-
-$return_date = $_POST['return_date'];
-
-$service = $_POST['service'];
-
-$message = $_POST['message'];
-// Validate booking dates
-
-$today = date('Y-m-d');
-
-if($pickup_date < $today){
-
-    die("Error: Pickup date cannot be in the past.");
+    die("Please fill in all required fields.");
 
 }
 
+
+// Check date order
 
 if($return_date < $pickup_date){
 
-    die("Error: Return date cannot be before pickup date.");
+    die("Return date cannot be before pickup date.");
 
 }
 
-// Check vehicle availability
 
-$check = $conn->prepare(
-    "SELECT id FROM bookings
+// Check vehicle availability again
+
+$stmt = $conn->prepare(
+    "SELECT id
+     FROM bookings
      WHERE vehicle = ?
-     AND status IN ('Pending', 'Confirmed')
-     AND pickup_date < ?
-     AND return_date > ?"
+     AND status != 'Cancelled'
+     AND pickup_date <= ?
+     AND return_date >= ?"
 );
 
-$check->bind_param(
+$stmt->bind_param(
     "sss",
     $vehicle,
     $return_date,
     $pickup_date
 );
 
-$check->execute();
+$stmt->execute();
 
-$check->store_result();
+$result = $stmt->get_result();
 
 
-if($check->num_rows > 0){
+// Vehicle already booked
 
-    $check->close();
+if($result->num_rows > 0){
 
-    die("
-        <h2>Vehicle Not Available</h2>
+    $stmt->close();
 
-        <p>
-        Sorry, this vehicle is already booked
-        for the selected dates.
-        </p>
+    header("Location: booking.php?error=unavailable");
 
-        <a href='booking.php'>
-        Choose Different Dates
-        </a>
-    ");
+    exit();
 
 }
 
+$stmt->close();
 
-$check->close();
 
-// Insert data
+// Insert booking
 
 $stmt = $conn->prepare(
     "INSERT INTO bookings
-    (name, phone, email, vehicle, pickup_date, return_date, service, message)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+    (
+        name,
+        phone,
+        email,
+        vehicle,
+        pickup_date,
+        return_date,
+        service,
+        message,
+        status
+    )
+    VALUES
+    (?, ?, ?, ?, ?, ?, ?, ?, 'Pending')"
 );
+
 
 $stmt->bind_param(
     "ssssssss",
@@ -128,28 +113,26 @@ $stmt->bind_param(
 
 if($stmt->execute()){
 
-    echo "
+    $booking_id = $stmt->insert_id;
 
-    <h2>Booking Submitted Successfully!</h2>
+    $stmt->close();
 
-    <p>Thank you " . htmlspecialchars($name) . ". We will contact you soon.</p>
+    header(
+        "Location: booking_success.php?id="
+        . $booking_id
+    );
 
-    <a href='index.php'>Back Home</a>
-
-    ";
+    exit();
 
 }else{
 
-    echo "Error: " . htmlspecialchars($stmt->error);
+    echo "Error: " . $stmt->error;
 
 }
 
 
 $stmt->close();
 
-
-
 $conn->close();
-
 
 ?>
