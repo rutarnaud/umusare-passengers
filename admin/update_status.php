@@ -1,28 +1,76 @@
 <?php
 
+session_start();
+
+
+// Check admin login
+
+if(!isset($_SESSION['admin'])){
+
+    header("Location: login.php");
+
+    exit();
+
+}
+
+
 include "../config.php";
 
+
+// Check submitted data
 
 if(isset($_POST['id']) && isset($_POST['status'])){
 
 
-    $id = $_POST['id'];
+    $id = intval($_POST['id']);
+
     $status = $_POST['status'];
 
 
-    $sql = "UPDATE bookings 
-            SET status='$status'
-            WHERE id='$id'";
+    // Only allow valid statuses
+
+    $allowedStatuses = [
+        "Pending",
+        "Confirmed",
+        "Cancelled"
+    ];
 
 
-    if($conn->query($sql) === TRUE){
+    if(!in_array($status, $allowedStatuses)){
+
+        die("Invalid booking status.");
+
+    }
+
+
+    // Prepared statement
+
+    $stmt = $conn->prepare(
+        "UPDATE bookings
+         SET status = ?
+         WHERE id = ?"
+    );
+
+
+    $stmt->bind_param(
+        "si",
+        $status,
+        $id
+    );
+
+
+    if($stmt->execute()){
+
+        $stmt->close();
 
         header("Location: index.php");
+
         exit();
 
     }else{
 
-        echo "Error: " . $conn->error;
+        echo "Error updating booking: "
+             . $stmt->error;
 
     }
 
@@ -30,7 +78,7 @@ if(isset($_POST['id']) && isset($_POST['status'])){
 }else{
 
 
-    echo "Missing data";
+    echo "Missing booking data.";
 
 
 }
