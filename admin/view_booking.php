@@ -137,7 +137,34 @@ h1{
 
 }
 
+.actions{
+    margin-top:25px;
+    padding:20px 0;
+}
 
+.actions button{
+    padding:12px 20px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+    margin-right:10px;
+}
+
+.confirm-btn{
+    background:#28a745;
+    color:white;
+}
+
+.cancel-btn{
+    background:#dc3545;
+    color:white;
+}
+
+.confirm-btn:hover,
+.cancel-btn:hover{
+    opacity:.85;
+}
 </style>
 
 </head>
@@ -226,30 +253,66 @@ Booking Details
 </div>
 
 
-<div class="detail">
+<div class="actions">
 
-<strong>Status:</strong>
+    <?php if($booking['status'] != "Confirmed"){ ?>
 
-<?php
+        <form action="update_status.php" method="POST" style="display:inline;">
 
-if($booking['status'] == "Confirmed"){
+            <input
+                type="hidden"
+                name="id"
+                value="<?php echo $booking['id']; ?>"
+            >
 
-    echo "🟢 Confirmed";
+            <input
+                type="hidden"
+                name="status"
+                value="Confirmed"
+            >
 
-}elseif($booking['status'] == "Cancelled"){
+            <button
+                type="submit"
+                class="confirm-btn"
+                onclick="return confirm('Confirm this booking?');"
+            >
+                🟢 Confirm Booking
+            </button>
 
-    echo "🔴 Cancelled";
+        </form>
 
-}else{
+    <?php } ?>
 
-    echo "🟡 Pending";
 
-}
+    <?php if($booking['status'] != "Cancelled"){ ?>
 
-?>
+        <form action="update_status.php" method="POST" style="display:inline;">
+
+            <input
+                type="hidden"
+                name="id"
+                value="<?php echo $booking['id']; ?>"
+            >
+
+            <input
+                type="hidden"
+                name="status"
+                value="Cancelled"
+            >
+
+            <button
+                type="submit"
+                class="cancel-btn"
+                onclick="return confirm('Cancel this booking?');"
+            >
+                🔴 Cancel Booking
+            </button>
+
+        </form>
+
+    <?php } ?>
 
 </div>
-
 
 <div class="detail">
 
