@@ -3,71 +3,135 @@
 session_start();
 
 
+// ========================================
+// Check Admin Login
+// ========================================
+
 if(!isset($_SESSION['admin'])){
 
     header("Location: login.php");
-
     exit();
 
 }
 
-
 include "../config.php";
 
 
-$id = intval($_GET['id']);
+// ========================================
+// Get Vehicle ID Safely
+// ========================================
+
+$id = intval($_GET['id'] ?? 0);
 
 
-// First get vehicle image
+if($id <= 0){
 
-$stmt = $conn->prepare("SELECT image FROM vehicles WHERE id = ?");
-$stmt->bind_param("i", $id);
+    die("Invalid vehicle ID.");
+
+}
+
+
+// ========================================
+// Get Vehicle
+// ========================================
+
+$stmt = $conn->prepare(
+    "SELECT image FROM vehicles WHERE id = ?"
+);
+
+$stmt->bind_param(
+    "i",
+    $id
+);
+
 $stmt->execute();
 
 $result = $stmt->get_result();
+
 $vehicle = $result->fetch_assoc();
 
 $stmt->close();
 
 
+// ========================================
+// Check Vehicle Exists
+// ========================================
+
+if(!$vehicle){
+
+    die("Vehicle not found.");
+
+}
+
+
 $image = $vehicle['image'];
 
 
-// Delete image from folder
+// ========================================
+// Delete Vehicle From Database
+// ========================================
 
-if(!empty($image)){
-
-    $image_path = "../assets/images/".$image;
-
-    if(file_exists($image_path)){
-
-        unlink($image_path);
-
-    }
-
-}
+$stmt = $conn->prepare(
+    "DELETE FROM vehicles WHERE id = ?"
+);
 
 
-// Delete vehicle from database
+$stmt->bind_param(
+    "i",
+    $id
+);
 
-$stmt = $conn->prepare("DELETE FROM vehicles WHERE id = ?");
-$stmt->bind_param("i", $id);
 
 if($stmt->execute()){
 
-    $_SESSION['success'] = "Vehicle deleted successfully!";
+
+    $stmt->close();
+
+
+    // ====================================
+    // Database deletion succeeded.
+    // Now delete image.
+    // ====================================
+
+    if(!empty($image)){
+
+
+        $image_path =
+            "../assets/images/"
+            . basename($image);
+
+
+        if(file_exists($image_path)){
+
+            unlink($image_path);
+
+        }
+
+    }
+
+
+    // ====================================
+    // Success Message
+    // ====================================
+
+    $_SESSION['success'] =
+        "Vehicle deleted successfully!";
+
 
     header("Location: vehicles.php");
+
     exit();
 
+
+}else{
+
+
+    echo "Error deleting vehicle: "
+         . htmlspecialchars($stmt->error);
+
+
+    $stmt->close();
+
 }
-else{
-
-
-    echo "Error deleting vehicle: ".$conn->error;
-
-
-}
-
 
 ?>
