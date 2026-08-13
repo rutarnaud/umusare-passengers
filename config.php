@@ -20,4 +20,9 @@ if ($conn->connect_error) {
 
 }
 
+
+// Support UTF-8 / emojis
+
+$conn->set_charset("utf8mb4");
+
 ?>

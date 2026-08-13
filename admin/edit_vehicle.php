@@ -2,17 +2,38 @@
 
 session_start();
 
+
+// ========================================
+// Check Admin Login
+// ========================================
+
 if(!isset($_SESSION['admin'])){
+
     header("Location: login.php");
     exit();
+
 }
 
 include "../config.php";
 
-$id = intval($_GET['id']);
+
+// ========================================
+// Get Vehicle ID
+// ========================================
+
+$id = intval($_GET['id'] ?? 0);
+
+if($id <= 0){
+
+    die("Invalid vehicle ID.");
+
+}
 
 
-// Get vehicle safely
+// ========================================
+// Get Vehicle Safely
+// ========================================
+
 $stmt = $conn->prepare(
     "SELECT * FROM vehicles WHERE id = ?"
 );
@@ -21,35 +42,104 @@ $stmt->bind_param("i", $id);
 $stmt->execute();
 
 $result = $stmt->get_result();
+
 $vehicle = $result->fetch_assoc();
 
 $stmt->close();
 
 
-// Check vehicle exists
 if(!$vehicle){
+
     die("Vehicle not found.");
+
 }
 
 
+// ========================================
+// Update Vehicle
+// ========================================
+
 if(isset($_POST['update'])){
 
-    $name = $_POST['name'];
-    $price = $_POST['price'];
-    $description = $_POST['description'];
-    $status = $_POST['status'];
 
-    // Keep old image by default
+    // ====================================
+    // Get Form Data
+    // ====================================
+
+    $name = trim($_POST['name'] ?? "");
+    $price = trim($_POST['price'] ?? "");
+    $description = trim($_POST['description'] ?? "");
+    $status = $_POST['status'] ?? "";
+
+
+    // ====================================
+    // Validate Name
+    // ====================================
+
+    if($name === ""){
+
+        die("Vehicle name is required.");
+
+    }
+
+
+    // ====================================
+    // Validate Price
+    // ====================================
+
+    if($price === "" || !is_numeric($price) || $price < 0){
+
+        die("Please enter a valid vehicle price.");
+
+    }
+
+
+    // ====================================
+    // Validate Status
+    // ====================================
+
+    $allowedStatuses = [
+        "Available",
+        "Booked",
+        "Maintenance"
+    ];
+
+
+    if(!in_array($status, $allowedStatuses, true)){
+
+        die("Invalid vehicle status.");
+
+    }
+
+
+    // ====================================
+    // Keep Old Image
+    // ====================================
+
     $image = $vehicle['image'];
 
+    $new_image_uploaded = false;
+    $new_image_path = "";
+    $old_image_path = "";
 
-    // Check if a new image was selected
-    if(isset($_FILES['image']) && $_FILES['image']['name'] != ""){
+
+    // ====================================
+    // Check New Image
+    // ====================================
+
+    if(
+        isset($_FILES['image']) &&
+        $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE
+    ){
+
 
         $uploaded_image = $_FILES['image'];
 
 
-        // Check upload error
+        // ==================================
+        // Upload Error
+        // ==================================
+
         if($uploaded_image['error'] !== UPLOAD_ERR_OK){
 
             die("Image upload failed.");
@@ -57,66 +147,107 @@ if(isset($_POST['update'])){
         }
 
 
-        // Maximum size: 5 MB
+        // ==================================
+        // Maximum File Size
+        // ==================================
+
         $max_size = 5 * 1024 * 1024;
+
 
         if($uploaded_image['size'] > $max_size){
 
-            die("Image is too large. Maximum size is 5 MB.");
+            die(
+                "Image is too large. Maximum size is 5 MB."
+            );
 
         }
 
 
-        // Allowed image types
+        // ==================================
+        // Allowed MIME Types
+        // ==================================
+
         $allowed_types = [
-            'image/jpeg',
-            'image/png',
-            'image/webp',
-            'image/avif'
+
+            'image/jpeg' => 'jpg',
+
+            'image/png' => 'png',
+
+            'image/webp' => 'webp',
+
+            'image/avif' => 'avif'
+
         ];
 
 
-        // Check real file type
+        // ==================================
+        // Real File Type
+        // ==================================
+
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
+
+        if(!$finfo){
+
+            die("Unable to verify image type.");
+
+        }
+
 
         $file_type = finfo_file(
             $finfo,
             $uploaded_image['tmp_name']
         );
 
+
         finfo_close($finfo);
 
 
-        if(!in_array($file_type, $allowed_types)){
+        // ==================================
+        // Validate MIME Type
+        // ==================================
 
-            die("Invalid image type. Please upload JPG, PNG, WEBP or AVIF.");
+        if(!array_key_exists(
+            $file_type,
+            $allowed_types
+        )){
+
+            die(
+                "Invalid image type. Please upload JPG, PNG, WEBP or AVIF."
+            );
 
         }
 
 
-        // Get extension
-        $extension = pathinfo(
-            $uploaded_image['name'],
-            PATHINFO_EXTENSION
-        );
+        // ==================================
+        // Get Safe Extension From MIME
+        // ==================================
+
+        $extension = $allowed_types[$file_type];
 
 
-        // Create safe filename
+        // ==================================
+        // Create Safe Filename
+        // ==================================
+
         $new_filename =
             uniqid('vehicle_', true)
             . '.'
-            . strtolower($extension);
+            . $extension;
 
 
-        $upload_path =
+        $new_image_path =
             "../assets/images/"
             . $new_filename;
 
 
-        // Upload new image
+        // ==================================
+        // Move New Image
+        // ==================================
+
         if(!move_uploaded_file(
             $uploaded_image['tmp_name'],
-            $upload_path
+            $new_image_path
         )){
 
             die("Failed to save image.");
@@ -124,30 +255,22 @@ if(isset($_POST['update'])){
         }
 
 
-        // Delete old image
-        if(!empty($vehicle['image'])){
+        $new_image_uploaded = true;
 
-            $old_image_path =
-                "../assets/images/"
-                . $vehicle['image'];
-
-
-            if(file_exists($old_image_path)){
-
-                unlink($old_image_path);
-
-            }
-
-        }
+        $old_image_path =
+            "../assets/images/"
+            . $vehicle['image'];
 
 
-        // Save new filename
         $image = $new_filename;
 
     }
 
 
-    // Update database safely
+    // ====================================
+    // Update Database
+    // ====================================
+
     $stmt = $conn->prepare(
         "UPDATE vehicles SET
          name = ?,
@@ -157,6 +280,25 @@ if(isset($_POST['update'])){
          status = ?
          WHERE id = ?"
     );
+
+
+    if(!$stmt){
+
+        // If database update cannot be prepared,
+        // remove newly uploaded image.
+
+        if($new_image_uploaded && file_exists($new_image_path)){
+
+            unlink($new_image_path);
+
+        }
+
+        die(
+            "Database error: "
+            . $conn->error
+        );
+
+    }
 
 
     $stmt->bind_param(
@@ -170,20 +312,64 @@ if(isset($_POST['update'])){
     );
 
 
+    // ====================================
+    // Execute Update
+    // ====================================
+
     if($stmt->execute()){
 
+
         $stmt->close();
-    
-        $_SESSION['success'] = "Vehicle updated successfully!";
-    
+
+
+        // =================================
+        // Delete Old Image ONLY AFTER
+        // Database Update Succeeds
+        // =================================
+
+        if(
+            $new_image_uploaded &&
+            !empty($vehicle['image']) &&
+            file_exists($old_image_path)
+        ){
+
+            unlink($old_image_path);
+
+        }
+
+
+        $_SESSION['success'] =
+            "Vehicle updated successfully!";
+
+
         header("Location: vehicles.php");
+
         exit();
-    
-    }
-    else{
+
+
+    }else{
+
+
+        // =================================
+        // Database Failed
+        // Remove New Image
+        // =================================
+
+        if(
+            $new_image_uploaded &&
+            file_exists($new_image_path)
+        ){
+
+            unlink($new_image_path);
+
+        }
+
 
         echo "Error updating vehicle: "
-             . $stmt->error;
+             . htmlspecialchars($stmt->error);
+
+
+        $stmt->close();
 
     }
 
@@ -191,142 +377,315 @@ if(isset($_POST['update'])){
 
 ?>
 
-
 <!DOCTYPE html>
+
 <html>
 
 <head>
 
-<title>Edit Vehicle</title>
+<title>Edit Vehicle | Umusare Passengers</title>
+
 
 <style>
 
 body{
-font-family:Arial;
-background:#f5f5f5;
-padding:40px;
+
+    font-family:Arial;
+
+    background:#f5f5f5;
+
+    padding:40px;
+
 }
+
 
 form{
-background:white;
-padding:30px;
-max-width:500px;
-margin:auto;
-border-radius:10px;
+
+    background:white;
+
+    padding:30px;
+
+    max-width:500px;
+
+    margin:auto;
+
+    border-radius:10px;
+
 }
 
-input, textarea, select{
-width:100%;
-padding:12px;
-margin:10px 0;
-box-sizing:border-box;
+
+input,
+textarea,
+select{
+
+    width:100%;
+
+    padding:12px;
+
+    margin:10px 0;
+
+    box-sizing:border-box;
+
 }
+
 
 button{
-background:#0B1F3A;
-color:white;
-padding:12px 20px;
-border:none;
-cursor:pointer;
+
+    background:#0B1F3A;
+
+    color:white;
+
+    padding:12px 20px;
+
+    border:none;
+
+    cursor:pointer;
+
 }
 
-.current-image{
-width:150px;
-height:100px;
-object-fit:cover;
-border-radius:8px;
-display:block;
-margin:10px 0;
+
+button:hover{
+
+    opacity:.9;
+
 }
+
+
+.current-image{
+
+    width:150px;
+
+    height:100px;
+
+    object-fit:cover;
+
+    border-radius:8px;
+
+    display:block;
+
+    margin:10px 0;
+
+}
+
 
 </style>
 
 </head>
 
+
 <body>
 
-<form method="POST" enctype="multipart/form-data">
 
-<h2>Edit Vehicle</h2>
+<form
+method="POST"
+enctype="multipart/form-data"
+>
 
 
-<label>Vehicle Name</label>
+<h2>
+Edit Vehicle
+</h2>
+
+
+<!-- ================================
+     Vehicle Name
+================================ -->
+
+
+<label>
+Vehicle Name
+</label>
+
 
 <input
 type="text"
 name="name"
 value="<?php echo htmlspecialchars($vehicle['name']); ?>"
-required>
+required
+>
 
 
-<label>Price</label>
+<!-- ================================
+     Price
+================================ -->
+
+
+<label>
+Price
+</label>
+
 
 <input
-type="text"
+type="number"
 name="price"
 value="<?php echo htmlspecialchars($vehicle['price']); ?>"
-required>
+min="0"
+step="0.01"
+required
+>
 
 
-<label>Current Vehicle Image</label>
+<!-- ================================
+     Current Image
+================================ -->
+
+
+<label>
+Current Vehicle Image
+</label>
+
+
+<?php if(!empty($vehicle['image'])){ ?>
 
 <img
 class="current-image"
 src="../assets/images/<?php echo htmlspecialchars($vehicle['image']); ?>"
-alt="<?php echo htmlspecialchars($vehicle['name']); ?>">
+alt="<?php echo htmlspecialchars($vehicle['name']); ?>"
+>
+
+<?php }else{ ?>
+
+<p>
+No image available.
+</p>
+
+<?php } ?>
 
 
-<label>Change Vehicle Image</label>
+<!-- ================================
+     New Image
+================================ -->
+
+
+<label>
+Change Vehicle Image
+</label>
+
 
 <input
 type="file"
 name="image"
-accept=".jpg,.jpeg,.png,.webp,.avif">
+accept=".jpg,.jpeg,.png,.webp,.avif"
+>
 
 
 <p>
-Current file:
-<?php echo htmlspecialchars($vehicle['image']); ?>
+Maximum image size: 5 MB
 </p>
 
 
-<label>Description</label>
+<p>
+
+Current file:
+
+<?php echo htmlspecialchars($vehicle['image']); ?>
+
+</p>
+
+
+<!-- ================================
+     Description
+================================ -->
+
+
+<label>
+Description
+</label>
+
 
 <textarea
 name="description"
-rows="5"><?php echo htmlspecialchars($vehicle['description']); ?></textarea>
+rows="5"
+><?php echo htmlspecialchars($vehicle['description']); ?></textarea>
 
 
-<label>Status</label>
+<!-- ================================
+     Status
+================================ -->
 
-<select name="status">
+
+<label>
+Status
+</label>
+
+
+<select name="status" required>
+
 
 <option
 value="Available"
-<?php if($vehicle['status']=="Available") echo "selected"; ?>>
+<?php
+
+if($vehicle['status'] === "Available"){
+
+    echo "selected";
+
+}
+
+?>
+>
+
 Available
+
 </option>
+
 
 <option
 value="Booked"
-<?php if($vehicle['status']=="Booked") echo "selected"; ?>>
+<?php
+
+if($vehicle['status'] === "Booked"){
+
+    echo "selected";
+
+}
+
+?>
+>
+
 Booked
+
 </option>
+
 
 <option
 value="Maintenance"
-<?php if($vehicle['status']=="Maintenance") echo "selected"; ?>>
+<?php
+
+if($vehicle['status'] === "Maintenance"){
+
+    echo "selected";
+
+}
+
+?>
+>
+
 Maintenance
+
 </option>
+
 
 </select>
 
 
-<button name="update">
+<!-- ================================
+     Update
+================================ -->
+
+
+<button
+type="submit"
+name="update"
+>
+
 Update Vehicle
+
 </button>
 
+
 </form>
+
 
 </body>
 
