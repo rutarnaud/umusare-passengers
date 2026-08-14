@@ -5,7 +5,6 @@ session_start();
 if(!isset($_SESSION['admin'])){
 
     header("Location: login.php");
-
     exit();
 
 }
@@ -37,6 +36,59 @@ if(!$booking){
 
 }
 
+
+// ========================================
+// Prepare Customer Phone for WhatsApp
+// ========================================
+
+$phone = preg_replace('/[^0-9+]/', '', $booking['phone']);
+
+
+// Rwanda local number: 078... -> 25078...
+if(str_starts_with($phone, '0')){
+
+    $whatsappPhone = '250' . substr($phone, 1);
+
+}elseif(str_starts_with($phone, '+250')){
+
+    $whatsappPhone = substr($phone, 1);
+
+}else{
+
+    $whatsappPhone = $phone;
+
+}
+
+
+// ========================================
+// WhatsApp Message
+// ========================================
+
+$whatsappMessage =
+    "Hello " . $booking['name'] .
+    ", this is Umusare Passengers regarding your booking." .
+    "\n\n" .
+    "Booking ID: #" . $booking['id'] .
+    "\n" .
+    "Vehicle: " . $booking['vehicle'] .
+    "\n" .
+    "Pickup Date: " . $booking['pickup_date'] .
+    "\n" .
+    "Return Date: " . $booking['return_date'] .
+    "\n" .
+    "Service: " . $booking['service'] .
+    "\n" .
+    "Status: " . $booking['status'] .
+    "\n\n" .
+    "Thank you for choosing Umusare Passengers.";
+
+
+$whatsappURL =
+    "https://wa.me/" .
+    $whatsappPhone .
+    "?text=" .
+    urlencode($whatsappMessage);
+
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +97,10 @@ if(!$booking){
 
 <head>
 
-<title>Booking Details | Umusare Passengers</title>
+<title>
+Booking Details | Umusare Passengers
+</title>
+
 
 <style>
 
@@ -119,6 +174,105 @@ h1{
 }
 
 
+.actions{
+
+    margin-top:25px;
+
+    padding:20px 0;
+
+}
+
+
+.actions button{
+
+    padding:12px 20px;
+
+    border:none;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+    margin-right:10px;
+
+}
+
+
+.confirm-btn{
+
+    background:#28a745;
+
+    color:white;
+
+}
+
+
+.cancel-btn{
+
+    background:#dc3545;
+
+    color:white;
+
+}
+
+
+.contact-actions{
+
+    margin-top:20px;
+
+    padding:20px;
+
+    background:#f8f9fa;
+
+    border-radius:10px;
+
+}
+
+
+.contact-btn{
+
+    display:inline-block;
+
+    padding:12px 20px;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:6px;
+
+    font-weight:bold;
+
+    margin-right:10px;
+
+    margin-bottom:10px;
+
+}
+
+
+.call-btn{
+
+    background:#0B1F3A;
+
+}
+
+
+.whatsapp-btn{
+
+    background:#25D366;
+
+}
+
+
+.contact-btn:hover{
+
+    opacity:.85;
+
+}
+
+
 .back-btn{
 
     display:inline-block;
@@ -137,34 +291,6 @@ h1{
 
 }
 
-.actions{
-    margin-top:25px;
-    padding:20px 0;
-}
-
-.actions button{
-    padding:12px 20px;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
-    font-weight:bold;
-    margin-right:10px;
-}
-
-.confirm-btn{
-    background:#28a745;
-    color:white;
-}
-
-.cancel-btn{
-    background:#dc3545;
-    color:white;
-}
-
-.confirm-btn:hover,
-.cancel-btn:hover{
-    opacity:.85;
-}
 </style>
 
 </head>
@@ -253,72 +379,139 @@ Booking Details
 </div>
 
 
-<div class="actions">
+<!-- =====================================
+     Contact Customer
+===================================== -->
 
-    <?php if($booking['status'] != "Confirmed"){ ?>
+<div class="contact-actions">
 
-        <form action="update_status.php" method="POST" style="display:inline;">
+<strong>
+Contact Customer
+</strong>
 
-            <input
-                type="hidden"
-                name="id"
-                value="<?php echo $booking['id']; ?>"
-            >
-
-            <input
-                type="hidden"
-                name="status"
-                value="Confirmed"
-            >
-
-            <button
-                type="submit"
-                class="confirm-btn"
-                onclick="return confirm('Confirm this booking?');"
-            >
-                🟢 Confirm Booking
-            </button>
-
-        </form>
-
-    <?php } ?>
+<br><br>
 
 
-    <?php if($booking['status'] != "Cancelled"){ ?>
+<a
+href="tel:<?php echo htmlspecialchars($booking['phone']); ?>"
+class="contact-btn call-btn"
+>
+📞 Call Customer
+</a>
 
-        <form action="update_status.php" method="POST" style="display:inline;">
 
-            <input
-                type="hidden"
-                name="id"
-                value="<?php echo $booking['id']; ?>"
-            >
+<a
+href="<?php echo htmlspecialchars($whatsappURL); ?>"
+target="_blank"
+rel="noopener noreferrer"
+class="contact-btn whatsapp-btn"
+>
+💬 WhatsApp Customer
+</a>
 
-            <input
-                type="hidden"
-                name="status"
-                value="Cancelled"
-            >
-
-            <button
-                type="submit"
-                class="cancel-btn"
-                onclick="return confirm('Cancel this booking?');"
-            >
-                🔴 Cancel Booking
-            </button>
-
-        </form>
-
-    <?php } ?>
 
 </div>
+
+
+<!-- =====================================
+     Booking Actions
+===================================== -->
+
+<div class="actions">
+
+
+<?php if($booking['status'] != "Confirmed"){ ?>
+
+
+<form
+action="update_status.php"
+method="POST"
+style="display:inline;"
+>
+
+
+<input
+type="hidden"
+name="id"
+value="<?php echo $booking['id']; ?>"
+>
+
+
+<input
+type="hidden"
+name="status"
+value="Confirmed"
+>
+
+
+<button
+type="submit"
+class="confirm-btn"
+onclick="return confirm('Confirm this booking?');"
+>
+
+🟢 Confirm Booking
+
+</button>
+
+
+</form>
+
+
+<?php } ?>
+
+
+<?php if($booking['status'] != "Cancelled"){ ?>
+
+
+<form
+action="update_status.php"
+method="POST"
+style="display:inline;"
+>
+
+
+<input
+type="hidden"
+name="id"
+value="<?php echo $booking['id']; ?>"
+>
+
+
+<input
+type="hidden"
+name="status"
+value="Cancelled"
+>
+
+
+<button
+type="submit"
+class="cancel-btn"
+onclick="return confirm('Cancel this booking?');"
+>
+
+🔴 Cancel Booking
+
+</button>
+
+
+</form>
+
+
+<?php } ?>
+
+
+</div>
+
 
 <div class="detail">
 
 <strong>Message:</strong>
 
+
 <div class="message">
+
 
 <?php
 
@@ -336,6 +529,7 @@ if(!empty($booking['message'])){
 
 ?>
 
+
 </div>
 
 </div>
@@ -343,8 +537,11 @@ if(!empty($booking['message'])){
 
 <a
 href="index.php"
-class="back-btn">
+class="back-btn"
+>
+
 ⬅ Back to Bookings
+
 </a>
 
 
