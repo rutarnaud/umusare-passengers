@@ -3,22 +3,56 @@
 include "config.php";
 
 
+// ========================================
+// Get Booking ID
+// ========================================
+
 $id = intval($_GET['id'] ?? 0);
 
 
+if($id <= 0){
+
+    die("Invalid booking ID.");
+
+}
+
+
+// ========================================
+// Get Booking
+// ========================================
+
 $stmt = $conn->prepare(
-    "SELECT *
+    "SELECT
+        id,
+        name,
+        phone,
+        email,
+        vehicle,
+        pickup_date,
+        return_date,
+        service,
+        message,
+        status
      FROM bookings
-     WHERE id = ?"
+     WHERE id = ?
+     LIMIT 1"
 );
 
-$stmt->bind_param("i", $id);
+
+$stmt->bind_param(
+    "i",
+    $id
+);
+
 
 $stmt->execute();
 
+
 $result = $stmt->get_result();
 
+
 $booking = $result->fetch_assoc();
+
 
 $stmt->close();
 
@@ -29,11 +63,41 @@ if(!$booking){
 
 }
 
+
+$conn->close();
+
+
+// ========================================
+// Status Display
+// ========================================
+
+$status = $booking['status'];
+
+
+if($status === "Confirmed"){
+
+    $statusClass = "confirmed";
+    $statusIcon = "🟢";
+
+}elseif($status === "Cancelled"){
+
+    $statusClass = "cancelled";
+    $statusIcon = "🔴";
+
+}else{
+
+    $statusClass = "pending";
+    $statusIcon = "🟡";
+
+}
+
 ?>
+
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
+
 
 <head>
 
@@ -42,9 +106,19 @@ if(!$booking){
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<title>Booking Confirmed | Umusare Passengers</title>
+
+<title>
+Booking #<?php echo $booking['id']; ?>
+| Umusare Passengers
+</title>
+
 
 <style>
+
+*{
+    box-sizing:border-box;
+}
+
 
 body{
 
@@ -54,16 +128,23 @@ body{
 
     background:#f5f5f5;
 
-    padding:40px 20px;
+    color:#333;
 
 }
 
 
 .container{
 
-    max-width:650px;
+    max-width:750px;
 
-    margin:auto;
+    margin:60px auto;
+
+    padding:20px;
+
+}
+
+
+.booking-card{
 
     background:white;
 
@@ -71,32 +152,31 @@ body{
 
     border-radius:15px;
 
-    box-shadow:0 5px 25px rgba(0,0,0,.1);
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.08);
 
 }
 
 
-.success{
+.header{
 
     text-align:center;
 
-    font-size:50px;
+    margin-bottom:30px;
 
 }
 
 
-h1{
-
-    text-align:center;
+.header h1{
 
     color:#0B1F3A;
 
+    margin-bottom:10px;
+
 }
 
 
-.subtitle{
-
-    text-align:center;
+.header p{
 
     color:#666;
 
@@ -105,75 +185,114 @@ h1{
 
 .booking-id{
 
+    display:inline-block;
+
     background:#0B1F3A;
 
     color:white;
 
-    padding:15px;
+    padding:8px 15px;
 
-    border-radius:8px;
-
-    text-align:center;
-
-    margin:25px 0;
-
-}
-
-
-.booking-id strong{
-
-    font-size:22px;
-
-}
-
-
-.details{
-
-    margin-top:20px;
-
-}
-
-
-.detail{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    padding:14px 0;
-
-    border-bottom:1px solid #eee;
-
-}
-
-
-.label{
+    border-radius:20px;
 
     font-weight:bold;
-
-    color:#0B1F3A;
 
 }
 
 
 .status{
 
-    color:#856404;
+    text-align:center;
+
+    padding:18px;
+
+    border-radius:10px;
+
+    margin-bottom:30px;
+
+    font-size:20px;
 
     font-weight:bold;
 
 }
 
 
-.message{
+.status.pending{
 
-    background:#f5f5f5;
+    background:#fff3cd;
+
+    color:#856404;
+
+}
+
+
+.status.confirmed{
+
+    background:#d4edda;
+
+    color:#155724;
+
+}
+
+
+.status.cancelled{
+
+    background:#f8d7da;
+
+    color:#721c24;
+
+}
+
+
+.details{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:15px;
+
+}
+
+
+.detail{
 
     padding:15px;
 
+    background:#f8f9fa;
+
     border-radius:8px;
 
-    margin-top:15px;
+}
+
+
+.detail strong{
+
+    display:block;
+
+    color:#0B1F3A;
+
+    margin-bottom:6px;
+
+}
+
+
+.message{
+
+    margin-top:20px;
+
+    padding:18px;
+
+    background:#f8f9fa;
+
+    border-radius:8px;
+
+}
+
+
+.message strong{
+
+    color:#0B1F3A;
 
 }
 
@@ -204,7 +323,7 @@ h1{
 }
 
 
-.home{
+.home-btn{
 
     background:#0B1F3A;
 
@@ -213,22 +332,41 @@ h1{
 }
 
 
-.whatsapp{
+.new-btn{
 
-    background:#25D366;
+    background:#D4AF37;
 
-    color:white;
+    color:#111;
+
+}
+
+
+@media(max-width:600px){
+
+    .container{
+
+        margin:20px auto;
+
+    }
+
+
+    .booking-card{
+
+        padding:20px;
+
+    }
+
+
+    .details{
+
+        grid-template-columns:1fr;
+
+    }
 
 }
 
-.whatsapp{
-
-background:#25D366;
-
-color:white;
-
-}
 </style>
+
 
 </head>
 
@@ -239,43 +377,53 @@ color:white;
 <div class="container">
 
 
-<div class="success">
+<div class="booking-card">
 
-✅
 
-</div>
+<div class="header">
 
 
 <h1>
-Booking Submitted Successfully!
+Booking Submitted Successfully! 🎉
 </h1>
 
 
-<p class="subtitle">
-
+<p>
 Thank you
 <strong>
 <?php echo htmlspecialchars($booking['name']); ?>
 </strong>.
-
-We have received your booking request.
-
 </p>
 
 
-<div class="booking-id">
+<span class="booking-id">
 
-Your Booking ID
+Booking #<?php echo htmlspecialchars($booking['id']); ?>
 
-<br>
+</span>
 
-<strong>
-
-#<?php echo htmlspecialchars($booking['id']); ?>
-
-</strong>
 
 </div>
+
+
+<!-- =====================================
+     STATUS
+===================================== -->
+
+
+<div class="status <?php echo $statusClass; ?>">
+
+<?php echo $statusIcon; ?>
+
+<?php echo htmlspecialchars($status); ?>
+
+
+</div>
+
+
+<!-- =====================================
+     BOOKING DETAILS
+===================================== -->
 
 
 <div class="details">
@@ -283,73 +431,91 @@ Your Booking ID
 
 <div class="detail">
 
-<span class="label">
+<strong>
+Customer
+</strong>
+
+<?php echo htmlspecialchars($booking['name']); ?>
+
+</div>
+
+
+<div class="detail">
+
+<strong>
+Phone
+</strong>
+
+<?php echo htmlspecialchars($booking['phone']); ?>
+
+</div>
+
+
+<div class="detail">
+
+<strong>
 Vehicle
-</span>
+</strong>
 
-<span>
 <?php echo htmlspecialchars($booking['vehicle']); ?>
-</span>
 
 </div>
 
 
 <div class="detail">
 
-<span class="label">
-Pickup Date
-</span>
-
-<span>
-<?php echo htmlspecialchars($booking['pickup_date']); ?>
-</span>
-
-</div>
-
-
-<div class="detail">
-
-<span class="label">
-Return Date
-</span>
-
-<span>
-<?php echo htmlspecialchars($booking['return_date']); ?>
-</span>
-
-</div>
-
-
-<div class="detail">
-
-<span class="label">
+<strong>
 Service
-</span>
+</strong>
 
-<span>
 <?php echo htmlspecialchars($booking['service']); ?>
-</span>
 
 </div>
 
 
 <div class="detail">
 
-<span class="label">
-Status
-</span>
+<strong>
+Pick-up Date
+</strong>
 
-<span class="status">
-🟡 Pending
-</span>
+<?php echo htmlspecialchars($booking['pickup_date']); ?>
 
 </div>
 
 
+<div class="detail">
+
+<strong>
+Return Date
+</strong>
+
+<?php echo htmlspecialchars($booking['return_date']); ?>
+
 </div>
 
 
-<?php if(!empty($booking['message'])){ ?>
+<?php if(!empty($booking['email'])){ ?>
+
+<div class="detail">
+
+<strong>
+Email
+</strong>
+
+<?php echo htmlspecialchars($booking['email']); ?>
+
+</div>
+
+<?php } ?>
+
+
+</div>
+
+
+<!-- =====================================
+     MESSAGE
+===================================== -->
 
 
 <div class="message">
@@ -358,20 +524,85 @@ Status
 Your Message
 </strong>
 
+
 <br><br>
+
 
 <?php
 
-echo nl2br(
-    htmlspecialchars($booking['message'])
-);
+if(!empty($booking['message'])){
+
+    echo nl2br(
+        htmlspecialchars($booking['message'])
+    );
+
+}else{
+
+    echo "No additional message.";
+
+}
 
 ?>
 
 </div>
 
 
+<!-- =====================================
+     STATUS MESSAGE
+===================================== -->
+
+
+<div class="message">
+
+
+<?php if($status === "Pending"){ ?>
+
+<strong>
+⏳ Booking is waiting for confirmation.
+</strong>
+
+<br><br>
+
+Our team will review your booking
+and contact you soon.
+
 <?php } ?>
+
+
+<?php if($status === "Confirmed"){ ?>
+
+<strong>
+🎉 Your booking has been confirmed!
+</strong>
+
+<br><br>
+
+Your vehicle is reserved for the selected
+dates.
+
+<?php } ?>
+
+
+<?php if($status === "Cancelled"){ ?>
+
+<strong>
+❌ This booking has been cancelled.
+</strong>
+
+<br><br>
+
+Please contact Umusare Passengers if
+you need further assistance.
+
+<?php } ?>
+
+
+</div>
+
+
+<!-- =====================================
+     BUTTONS
+===================================== -->
 
 
 <div class="buttons">
@@ -379,43 +610,23 @@ echo nl2br(
 
 <a
 href="index.php"
-class="btn home">
+class="btn home-btn">
 
 ⬅ Back Home
 
 </a>
 
-<?php
-
-$whatsappNumber = "250780310358";
-
-$whatsappMessage =
-"Hello Umusare Passengers,\n\n" .
-"I have submitted a booking.\n\n" .
-"Booking ID: #" . $booking['id'] . "\n" .
-"Vehicle: " . $booking['vehicle'] . "\n" .
-"Pickup Date: " . $booking['pickup_date'] . "\n" .
-"Return Date: " . $booking['return_date'] . "\n" .
-"Service: " . $booking['service'] . "\n\n" .
-"Name: " . $booking['name'] . "\n" .
-"Phone: " . $booking['phone'];
-
-$whatsappLink =
-"https://wa.me/" .
-$whatsappNumber .
-"?text=" .
-urlencode($whatsappMessage);
-
-?>
 
 <a
-href="<?php echo htmlspecialchars($whatsappLink); ?>"
-class="btn whatsapp"
-target="_blank">
+href="booking.php"
+class="btn new-btn">
 
-📱 Contact Us on WhatsApp
+🚗 Make Another Booking
 
 </a>
+
+
+</div>
 
 
 </div>
@@ -425,5 +636,6 @@ target="_blank">
 
 
 </body>
+
 
 </html>
