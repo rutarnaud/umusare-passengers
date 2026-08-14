@@ -5,12 +5,20 @@ session_start();
 if(!isset($_SESSION['admin'])){
 
     header("Location: login.php");
-
     exit();
 
 }
 
 include "../config.php";
+
+
+// ================================
+// Search & Filters
+// ================================
+
+$search = trim($_GET['search'] ?? '');
+$statusFilter = $_GET['status'] ?? '';
+$pickupFilter = $_GET['pickup_date'] ?? '';
 
 
 // ================================
@@ -44,14 +52,90 @@ $cancelledBookings = $conn->query(
 
 
 // ================================
-// Get Bookings
+// Build Booking Query
 // ================================
 
 $sql = "SELECT *
         FROM bookings
-        ORDER BY id DESC";
+        WHERE 1=1";
 
-$result = $conn->query($sql);
+$params = [];
+$types = '';
+
+
+// Search Name / Phone / Vehicle
+
+if($search !== ''){
+
+    $sql .= "
+        AND (
+            name LIKE ?
+            OR phone LIKE ?
+            OR vehicle LIKE ?
+        )
+    ";
+
+    $searchValue = "%" . $search . "%";
+
+    $params[] = $searchValue;
+    $params[] = $searchValue;
+    $params[] = $searchValue;
+
+    $types .= "sss";
+}
+
+
+// Status Filter
+
+if(
+    $statusFilter === "Pending" ||
+    $statusFilter === "Confirmed" ||
+    $statusFilter === "Cancelled"
+){
+
+    $sql .= " AND status = ?";
+
+    $params[] = $statusFilter;
+
+    $types .= "s";
+}
+
+
+// Pickup Date Filter
+
+if($pickupFilter !== ''){
+
+    $sql .= " AND pickup_date = ?";
+
+    $params[] = $pickupFilter;
+
+    $types .= "s";
+}
+
+
+$sql .= " ORDER BY id DESC";
+
+
+// ================================
+// Prepared Statement
+// ================================
+
+$stmt = $conn->prepare($sql);
+
+
+if(!empty($params)){
+
+    $stmt->bind_param(
+        $types,
+        ...$params
+    );
+
+}
+
+
+$stmt->execute();
+
+$result = $stmt->get_result();
 
 ?>
 
@@ -61,7 +145,10 @@ $result = $conn->query($sql);
 
 <head>
 
-<title>Admin Dashboard | Umusare Passengers</title>
+<title>
+Admin Dashboard | Umusare Passengers
+</title>
+
 
 <style>
 
@@ -170,31 +257,171 @@ button{
 }
 
 
-select{
+select,
+input{
 
-    padding:7px;
+    padding:9px;
 
 }
-.status-badge{
+
+
+.filters{
+
+    background:white;
+
+    padding:20px;
+
+    margin:25px 0;
+
+    border-radius:10px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.06);
+
+}
+
+
+.filters input{
+
+    width:250px;
+
+    margin-right:10px;
+
+}
+
+
+.filters select{
+
+    margin-right:10px;
+
+}
+
+
+.search-btn{
+
+    background:#0B1F3A;
+
+    color:white;
+
+    border:none;
+
+    border-radius:5px;
+
+}
+
+
+.clear-btn{
+
     display:inline-block;
-    padding:6px 12px;
-    border-radius:20px;
-    font-weight:bold;
+
+    padding:8px 15px;
+
+    background:#777;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:5px;
+
+    margin-left:5px;
+
 }
+
+
+.status-badge{
+
+    display:inline-block;
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+    font-weight:bold;
+
+}
+
 
 .status-pending{
+
     background:#fff3cd;
+
     color:#856404;
+
 }
+
 
 .status-confirmed{
+
     background:#d4edda;
+
     color:#155724;
+
 }
 
+
 .status-cancelled{
+
     background:#f8d7da;
+
     color:#721c24;
+
+}
+
+
+.no-results{
+
+    text-align:center;
+
+    padding:30px;
+
+    color:#777;
+
+    font-weight:bold;
+
+}
+
+
+@media(max-width:900px){
+
+    body{
+
+        padding:15px;
+
+    }
+
+    .stats{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+
+@media(max-width:600px){
+
+    .stats{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .filters input{
+
+        width:100%;
+
+        margin-bottom:10px;
+
+    }
+
+    .filters select{
+
+        width:100%;
+
+        margin-bottom:10px;
+
+    }
+
 }
 
 </style>
@@ -231,6 +458,7 @@ Manage Vehicles
 <!-- ================================
      Statistics
 ================================ -->
+
 
 <div class="stats">
 
@@ -291,8 +519,104 @@ Cancelled
 
 
 <!-- ================================
+     Search & Filters
+================================ -->
+
+
+<div class="filters">
+
+
+<form method="GET">
+
+
+<input
+type="text"
+name="search"
+placeholder="Search name, phone or vehicle..."
+value="<?php echo htmlspecialchars($search); ?>"
+>
+
+
+<select name="status">
+
+
+<option value="">
+All Statuses
+</option>
+
+
+<option
+value="Pending"
+<?php
+if($statusFilter === "Pending"){
+    echo "selected";
+}
+?>
+>
+🟡 Pending
+</option>
+
+
+<option
+value="Confirmed"
+<?php
+if($statusFilter === "Confirmed"){
+    echo "selected";
+}
+?>
+>
+🟢 Confirmed
+</option>
+
+
+<option
+value="Cancelled"
+<?php
+if($statusFilter === "Cancelled"){
+    echo "selected";
+}
+?>
+>
+🔴 Cancelled
+</option>
+
+
+</select>
+
+
+<input
+type="date"
+name="pickup_date"
+value="<?php echo htmlspecialchars($pickupFilter); ?>"
+>
+
+
+<button
+type="submit"
+class="search-btn"
+>
+🔎 Search
+</button>
+
+
+<a
+href="index.php"
+class="clear-btn"
+>
+Clear
+</a>
+
+
+</form>
+
+
+</div>
+
+
+<!-- ================================
      Bookings Table
 ================================ -->
+
 
 <table>
 
@@ -320,6 +644,9 @@ Cancelled
 </tr>
 
 
+<?php if($result->num_rows > 0){ ?>
+
+
 <?php while($row = $result->fetch_assoc()){ ?>
 
 
@@ -327,7 +654,7 @@ Cancelled
 
 
 <td>
-<?php echo $row['id']; ?>
+<?php echo htmlspecialchars($row['id']); ?>
 </td>
 
 
@@ -363,6 +690,7 @@ Cancelled
 
 <td>
 
+
 <?php
 
 if($row['status'] == "Confirmed"){
@@ -387,10 +715,12 @@ if($row['status'] == "Confirmed"){
 
 ?>
 
+
 </td>
 
 
 <td>
+
 
 <a
 href="view_booking.php?id=<?php echo $row['id']; ?>"
@@ -403,12 +733,16 @@ text-decoration:none;
 border-radius:5px;
 margin-right:5px;
 ">
+
 View Details
+
 </a>
+
 
 <form
 action="update_status.php"
 method="POST"
+style="display:inline;"
 >
 
 
@@ -461,7 +795,9 @@ Cancelled
 </select>
 
 
-<button type="submit">
+<button
+type="submit"
+>
 Update
 </button>
 
@@ -478,9 +814,37 @@ Update
 <?php } ?>
 
 
+<?php }else{ ?>
+
+
+<tr>
+
+<td
+colspan="9"
+class="no-results"
+>
+
+🔍 No bookings found.
+
+</td>
+
+</tr>
+
+
+<?php } ?>
+
+
 </table>
 
 
 </body>
 
 </html>
+
+<?php
+
+$stmt->close();
+
+$conn->close();
+
+?>
