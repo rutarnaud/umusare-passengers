@@ -291,6 +291,20 @@ h1{
 
 }
 
+.cancel-btn{
+    background:#dc3545;
+    color:white;
+}
+
+.delete-btn{
+    background:#6c757d;
+    color:white;
+}
+
+.delete-btn:hover{
+    background:#343a40;
+}
+
 </style>
 
 </head>
@@ -492,6 +506,28 @@ onclick="return confirm('Cancel this booking?');"
 >
 
 🔴 Cancel Booking
+
+<form
+action="delete_booking.php"
+method="POST"
+style="display:inline;"
+>
+
+<input
+type="hidden"
+name="id"
+value="<?php echo $booking['id']; ?>"
+>
+
+<button
+type="submit"
+class="delete-btn"
+onclick="return confirm('⚠️ Are you sure you want to permanently delete this booking?');"
+>
+🗑️ Delete Booking
+</button>
+
+</form>
 
 </button>
 
