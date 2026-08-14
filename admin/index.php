@@ -50,6 +50,16 @@ $cancelledBookings = $conn->query(
      WHERE status='Cancelled'"
 )->fetch_assoc()['total'];
 
+// ================================
+// New Booking Notification
+// ================================
+
+$newBookings = $conn->query(
+    "SELECT COUNT(*) AS total
+     FROM bookings
+     WHERE status='Pending'"
+)->fetch_assoc()['total'];
+
 
 // ================================
 // Build Booking Query
@@ -380,6 +390,50 @@ input{
 
 }
 
+.notification{
+
+    background:#fff3cd;
+
+    color:#856404;
+
+    padding:15px 20px;
+
+    margin:25px 0;
+
+    border-radius:10px;
+
+    font-weight:bold;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.06);
+
+}
+
+
+.notification a{
+
+    display:inline-block;
+
+    margin-left:15px;
+
+    padding:8px 14px;
+
+    background:#0B1F3A;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:5px;
+
+}
+
+
+.notification a:hover{
+
+    opacity:.85;
+
+}
+
 
 @media(max-width:900px){
 
@@ -453,6 +507,26 @@ Manage Vehicles
 </button>
 
 </a>
+
+<?php if($newBookings > 0){ ?>
+
+<div class="notification">
+
+    🔔 You have
+
+    <strong>
+        <?php echo $newBookings; ?>
+    </strong>
+
+    new booking<?php echo $newBookings > 1 ? 's' : ''; ?>.
+
+    <a href="#bookings">
+        View New Bookings
+    </a>
+
+</div>
+
+<?php } ?>
 
 
 <!-- ================================
@@ -618,7 +692,7 @@ Clear
 ================================ -->
 
 
-<table>
+<table id="bookings">
 
 
 <tr>
